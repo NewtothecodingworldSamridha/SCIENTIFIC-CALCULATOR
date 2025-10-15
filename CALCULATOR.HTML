@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scientific Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+    #calculator {
+      width: 340px;
+      padding: 25px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    #mode-indicator {
+      text-align: center;
+      margin-bottom: 10px;
+      padding: 8px;
+      background: #f0f0f0;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #667eea;
+      font-size: 14px;
+    }
+    #display {
+      width: 100%;
+      height: 60px;
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 28px;
+      text-align: right;
+      background: #f8f9fa;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+    .button-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .button {
+      flex: 1;
+      height: 50px;
+      border: none;
+      border-radius: 10px;
+      background-color: #f0f0f0;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .button:hover {
+      background-color: #e0e0e0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .button:active {
+      transform: translateY(0);
+    }
+    .button.operator {
+      background-color: #667eea;
+      color: white;
+    }
+    .button.operator:hover {
+      background-color: #5568d3;
+    }
+    .button.function {
+      background-color: #764ba2;
+      color: white;
+      font-size: 16px;
+    }
+    .button.function:hover {
+      background-color: #5f3a82;
+    }
+    .button.clear {
+      background-color: #ff6b6b;
+      color: white;
+    }
+    .button.clear:hover {
+      background-color: #ee5a52;
+    }
+    .button.equals {
+      background-color: #51cf66;
+      color: white;
+    }
+    .button.equals:hover {
+      background-color: #40c057;
+    }
+    .button.mode {
+      background-color: #ffa94d;
+      color: white;
+      font-size: 14px;
+    }
+    .button.mode:hover {
+      background-color: #ff922b;
+    }
+  </style>
+</head>
+<body>
+  <div id="calculator">
+    <div id="mode-indicator">MODE: DEGREE</div>
+    <input type="text" id="display" disabled>
+    <div class="button-row">
+      <button class="button clear" onclick="clearDisplay()">C</button>
+      <button class="button clear" onclick="deleteChar()">DEL</button>
+      <button class="button mode" onclick="toggleMode()">DEG/RAD</button>
+      <button class="button function" onclick="appendValue('!')">n!</button>
+    </div>
+    <div class="button-row">
+      <button class="button operator" onclick="appendValue('(')">(</button>
+      <button class="button operator" onclick="appendValue(')')">)</button>
+      <button class="button function" onclick="appendValue('sqrt(')">√</button>
+      <button class="button function" onclick="appendValue('pow(')">x^y</button>
+    </div>
+    <div class="button-row">
+      <button class="button function" onclick="appendValue('sin(')">sin</button>
+      <button class="button function" onclick="appendValue('cos(')">cos</button>
+      <button class="button function" onclick="appendValue('tan(')">tan</button>
+      <button class="button function" onclick="appendValue('log(')">log</button>
+    </div>
+    <div class="button-row">
+      <button class="button function" onclick="appendValue('pi')">π</button>
+      <button class="button function" onclick="appendValue('e')">e</button>
+      <button class="button operator" onclick="appendValue('%')">%</button>
+      <button class="button operator" onclick="appendValue('/')">/</button>
+    </div>
+    <div class="button-row">
+      <button class="button" onclick="appendValue('7')">7</button>
+      <button class="button" onclick="appendValue('8')">8</button>
+      <button class="button" onclick="appendValue('9')">9</button>
+      <button class="button operator" onclick="appendValue('*')">×</button>
+    </div>
+    <div class="button-row">
+      <button class="button" onclick="appendValue('4')">4</button>
+      <button class="button" onclick="appendValue('5')">5</button>
+      <button class="button" onclick="appendValue('6')">6</button>
+      <button class="button operator" onclick="appendValue('-')">-</button>
+    </div>
+    <div class="button-row">
+      <button class="button" onclick="appendValue('1')">1</button>
+      <button class="button" onclick="appendValue('2')">2</button>
+      <button class="button" onclick="appendValue('3')">3</button>
+      <button class="button operator" onclick="appendValue('+')">+</button>
+    </div>
+    <div class="button-row">
+      <button class="button" onclick="appendValue('0')">0</button>
+      <button class="button" onclick="appendValue('.')">.</button>
+      <button class="button equals" onclick="calculate()">=</button>
+      <button class="button operator" onclick="appendValue(','">,</button>
+    </div>
+  </div>
+  <script>
+    let display = document.getElementById('display');
+    let modeIndicator = document.getElementById('mode-indicator');
+    let isDegree = true;
+
+    function appendValue(value) {
+      display.value += value;
+    }
+
+    function clearDisplay() {
+      display.value = '';
+    }
+
+    function deleteChar() {
+      display.value = display.value.slice(0, -1);
+    }
+
+    function toggleMode() {
+      isDegree = !isDegree;
+      modeIndicator.textContent = isDegree ? 'MODE: DEGREE' : 'MODE: RADIAN';
+    }
+
+    function factorial(n) {
+      if (n < 0) return NaN;
+      if (n === 0 || n === 1) return 1;
+      let result = 1;
+      for (let i = 2; i <= n; i++) {
+        result *= i;
+      }
+      return result;
+    }
+
+    function toRadians(degrees) {
+      return degrees * (Math.PI / 180);
+    }
+
+    function calculate() {
+      try {
+        let expression = display.value;
+        
+        // Handle factorial
+        expression = expression.replace(/(\d+(\.\d+)?)\!/g, function(match, num) {
+          let n = parseFloat(num);
+          if (n !== Math.floor(n)) {
+            throw new Error('Factorial only works with integers');
+          }
+          return factorial(n);
+        });
+        
+        // Replace mathematical functions based on mode
+        if (isDegree) {
+          expression = expression.replace(/sin\(/g, 'Math.sin(toRadians(');
+          expression = expression.replace(/cos\(/g, 'Math.cos(toRadians(');
+          expression = expression.replace(/tan\(/g, 'Math.tan(toRadians(');
+          // Add extra closing parenthesis for toRadians
+          let tempExpr = expression;
+          let sinCount = (tempExpr.match(/Math\.sin\(toRadians\(/g) || []).length;
+          let cosCount = (tempExpr.match(/Math\.cos\(toRadians\(/g) || []).length;
+          let tanCount = (tempExpr.match(/Math\.tan\(toRadians\(/g) || []).length;
+          
+          // Process the expression to add the extra closing parenthesis
+          let openParens = 0;
+          let result = '';
+          let i = 0;
+          let needsExtraClose = 0;
+          
+          while (i < expression.length) {
+            if (expression.substr(i, 18) === 'Math.sin(toRadians' ||
+                expression.substr(i, 18) === 'Math.cos(toRadians' ||
+                expression.substr(i, 18) === 'Math.tan(toRadians') {
+              let funcStart = i;
+              i += 18;
+              result += expression.substr(funcStart, 18);
+              result += expression[i]; // add the '('
+              i++;
+              needsExtraClose++;
+              openParens = 1;
+              
+              // Find matching closing parenthesis
+              while (i < expression.length && openParens > 0) {
+                if (expression[i] === '(') openParens++;
+                if (expression[i] === ')') openParens--;
+                result += expression[i];
+                i++;
+              }
+              // Add extra closing parenthesis for toRadians
+              if (needsExtraClose > 0) {
+                result += ')';
+                needsExtraClose--;
+              }
+            } else {
+              result += expression[i];
+              i++;
+            }
+          }
+          expression = result;
+        } else {
+          // Radian mode
+          expression = expression.replace(/sin\(/g, 'Math.sin(');
+          expression = expression.replace(/cos\(/g, 'Math.cos(');
+          expression = expression.replace(/tan\(/g, 'Math.tan(');
+        }
+        
+        expression = expression.replace(/log\(/g, 'Math.log10(');
+        expression = expression.replace(/sqrt\(/g, 'Math.sqrt(');
+        expression = expression.replace(/pow\(/g, 'Math.pow(');
+        expression = expression.replace(/pi/g, 'Math.PI');
+        expression = expression.replace(/e/g, 'Math.E');
+        
+        // Helper function for degree conversion
+        function toRadians(deg) {
+          return deg * (Math.PI / 180);
+        }
+        
+        let result = eval(expression);
+        
+        // Round to 10 decimal places to avoid floating point errors
+        result = Math.round(result * 10000000000) / 10000000000;
+        
+        display.value = result;
+      } catch (error) {
+        display.value = 'Error';
+      }
+    }
+
+    // Keyboard support
+    document.addEventListener('keydown', function(event) {
+      if (event.key >= '0' && event.key <= '9') {
+        appendValue(event.key);
+      } else if (event.key === '.') {
+        appendValue('.');
+      } else if (event.key === '+' || event.key === '-' || event.key === '*' || event.key === '/') {
+        appendValue(event.key);
+      } else if (event.key === 'Enter') {
+        calculate();
+      } else if (event.key === 'Escape') {
+        clearDisplay();
+      } else if (event.key === 'Backspace') {
+        deleteChar();
+      } else if (event.key === '(' || event.key === ')') {
+        appendValue(event.key);
+      } else if (event.key === '!') {
+        appendValue('!');
+      }
+    });
+  </script>
+</body>
+</html>
