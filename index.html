@@ -120,7 +120,7 @@
       <button class="button operator" onclick="appendValue('(')">(</button>
       <button class="button operator" onclick="appendValue(')')">)</button>
       <button class="button function" onclick="appendValue('sqrt(')">√</button>
-      <button class="button function" onclick="appendValue('pow(')">x^y</button>
+      <button class="button operator" onclick="appendValue('%')">%</button>
     </div>
     <div class="button-row">
       <button class="button function" onclick="appendValue('sin(')">sin</button>
@@ -131,7 +131,7 @@
     <div class="button-row">
       <button class="button function" onclick="appendValue('pi')">π</button>
       <button class="button function" onclick="appendValue('e')">e</button>
-      <button class="button operator" onclick="appendValue('%')">%</button>
+      <button class="button function" onclick="appendValue('^')">^</button>
       <button class="button operator" onclick="appendValue('/')">/</button>
     </div>
     <div class="button-row">
@@ -156,7 +156,7 @@
       <button class="button" onclick="appendValue('0')">0</button>
       <button class="button" onclick="appendValue('.')">.</button>
       <button class="button equals" onclick="calculate()">=</button>
-      <button class="button operator" onclick="appendValue(','">,</button>
+      <button class="button function" onclick="appendValue('ln(')">ln</button>
     </div>
   </div>
   <script>
@@ -199,14 +199,17 @@
       try {
         let expression = display.value;
         
-        // Handle factorial
-        expression = expression.replace(/(\d+(\.\d+)?)\!/g, function(match, num) {
-          let n = parseFloat(num);
-          if (n !== Math.floor(n)) {
-            throw new Error('Factorial only works with integers');
+        // Handle factorial first
+        expression = expression.replace(/(\d+)\!/g, function(match, num) {
+          let n = parseInt(num);
+          if (n < 0) {
+            throw new Error('Factorial only works with positive integers');
           }
           return factorial(n);
         });
+        
+        // Handle power operator (^) - convert to **
+        expression = expression.replace(/\^/g, '**');
         
         // Replace mathematical functions based on mode
         if (isDegree) {
@@ -263,6 +266,7 @@
         }
         
         expression = expression.replace(/log\(/g, 'Math.log10(');
+        expression = expression.replace(/ln\(/g, 'Math.log(');
         expression = expression.replace(/sqrt\(/g, 'Math.sqrt(');
         expression = expression.replace(/pow\(/g, 'Math.pow(');
         expression = expression.replace(/pi/g, 'Math.PI');
