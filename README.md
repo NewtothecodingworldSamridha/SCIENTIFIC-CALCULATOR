@@ -1,3 +1,3 @@
 YOUR DAILY CALCULATOR.
 
-WEBSITE: (https://newtothecodingworldsamridha.github.io/SCIENTIFIC-CALCULATOR/)
+WEBSITE: (https://samridhabanerjee.github.io/SCIENTIFIC-CALCULATOR/)
